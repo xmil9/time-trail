@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,6 +53,8 @@ fun GeoView(
     appOptions: AppOptions
 ) {
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
+
     var from = remember { mutableStateOf("") }
     var to = remember { mutableStateOf("") }
     val dateFormat = "yyyy-mm-dd"
@@ -72,6 +75,11 @@ fun GeoView(
         from.value = ""
         to.value = ""
         vm.allTrails()
+    }
+
+    fun onDateEntered() {
+        refreshTimeFrame()
+        focusManager.clearFocus()
     }
 
     Column(
@@ -108,7 +116,7 @@ fun GeoView(
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(
-                        onDone = {}
+                        onDone = { onDateEntered() }
                     ),
                 )
             }
@@ -133,7 +141,7 @@ fun GeoView(
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(
-                        onDone = {}
+                        onDone = { onDateEntered() }
                     ),
                 )
             }
