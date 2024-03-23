@@ -55,6 +55,7 @@ dependencies {
     implementation("org.osmdroid:osmdroid-android:6.1.18")
     implementation("androidx.room:room-runtime:2.6.0")
     implementation("androidx.room:room-ktx:2.6.0")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
     kapt("androidx.room:room-compiler:2.6.0")
     implementation("androidx.preference:preference-ktx:1.1.1")
     implementation("androidx.core:core-ktx:1.12.0")

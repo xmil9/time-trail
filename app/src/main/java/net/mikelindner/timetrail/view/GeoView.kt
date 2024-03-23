@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -29,7 +30,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import net.mikelindner.timetrail.app.AppOptions
+import net.mikelindner.timetrail.app.AppScreen
 import net.mikelindner.timetrail.domain.Date
 import net.mikelindner.timetrail.domain.NullTrailsRepository
 import net.mikelindner.timetrail.ui.theme.TimeTrailTheme
@@ -39,7 +42,7 @@ private fun showError(context: Context, errText: String) {
     Toast.makeText(context, errText, Toast.LENGTH_LONG).show()
 }
 
-private fun toDate(context: Context, dateInput: String, uiLabel: String): Date? {
+private fun toDate(dateInput: String, uiLabel: String): Date? {
     try {
         return if (dateInput.isNotEmpty()) Date.fromIso8601String(dateInput) else null
     } catch (ex: Exception) {
@@ -50,7 +53,8 @@ private fun toDate(context: Context, dateInput: String, uiLabel: String): Date? 
 @Composable
 fun GeoView(
     vm: GeoViewModel,
-    appOptions: AppOptions
+    appOptions: AppOptions,
+    bottomBar: @Composable () -> Unit
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
@@ -63,11 +67,11 @@ fun GeoView(
 
     fun refreshTimeFrame() {
         try {
-            val fromDate = toDate(context, from.value, fromLabel)
-            val toDate = toDate(context, to.value, toLabel)
+            val fromDate = toDate(from.value, fromLabel)
+            val toDate = toDate(to.value, toLabel)
             vm.timeConstrainedTrails(fromDate, toDate)
         } catch (ex: Exception) {
-            ex.message?.let { showError (context, it) }
+            ex.message?.let { showError(context, it) }
         }
     }
 
@@ -82,100 +86,109 @@ fun GeoView(
         focusManager.clearFocus()
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {
+    Scaffold(
+        bottomBar = bottomBar,
+        topBar = {
+            TopBarView(title = AppScreen.Map.title, showBackButton = false)
+        },
+    ) { padding ->
 
-        Row(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 12.dp),
-        ) {
-            Row(
-                modifier = Modifier
-                    .weight(1.1f),  // A little extra space because 'From' is longer than 'To'.
-            ) {
-                Text(
-                    modifier = Modifier
-                        .padding(start = 12.dp, end = 4.dp, top = 4.dp),
-                    text = fromLabel
-                )
-                VertSizeableTextField(
-                    value = from.value,
-                    placeholderValue = dateFormat,
-                    onValueChange = {
-                        from.value = it
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(30.dp)
-                        .padding(end = 0.dp),
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(
-                        onDone = { onDateEntered() }
-                    ),
-                )
-            }
-
-            Row(
-                modifier = Modifier
-                    .weight(1f),
-            ) {
-                Text(
-                    modifier = Modifier
-                        .padding(start = 8.dp, end = 4.dp, top = 4.dp),
-                    text = toLabel
-                )
-                VertSizeableTextField(
-                    value = to.value,
-                    onValueChange = { to.value = it },
-                    placeholderValue = dateFormat,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(30.dp)
-                        .padding(end = 8.dp),
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(
-                        onDone = { onDateEntered() }
-                    ),
-                )
-            }
-
-            IconButton(
-                modifier = Modifier
-                    .padding(top = 3.dp, end = 4.dp)
-                    .size(24.dp)
-                    .scale(1.0f),
-                onClick = {
-                    refreshTimeFrame()
-                }) {
-                Icon(imageVector = Icons.Default.Refresh, contentDescription = null)
-            }
-
-            IconButton(
-                modifier = Modifier
-                    .padding(top = 3.dp, end = 8.dp)
-                    .size(24.dp)
-                    .scale(1.0f),
-                onClick = {
-                    clearTimeFrame()
-                }) {
-                Icon(imageVector = Icons.Default.Clear, contentDescription = null)
-            }
-        }
-
-        OsmMapView(
-            Modifier
                 .fillMaxSize()
-                .padding(top = 12.dp),
-            vm = vm,
-            appOptions = appOptions
-        )
+                .padding(padding),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .weight(1.1f),  // A little extra space because 'From' is longer than 'To'.
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .padding(start = 12.dp, end = 4.dp, top = 4.dp),
+                        text = fromLabel
+                    )
+                    VertSizeableTextField(
+                        value = from.value,
+                        placeholderValue = dateFormat,
+                        onValueChange = {
+                            from.value = it
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(30.dp)
+                            .padding(end = 0.dp),
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(
+                            onDone = { onDateEntered() }
+                        ),
+                    )
+                }
+
+                Row(
+                    modifier = Modifier
+                        .weight(1f),
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .padding(start = 8.dp, end = 4.dp, top = 4.dp),
+                        text = toLabel
+                    )
+                    VertSizeableTextField(
+                        value = to.value,
+                        onValueChange = { to.value = it },
+                        placeholderValue = dateFormat,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(30.dp)
+                            .padding(end = 8.dp),
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(
+                            onDone = { onDateEntered() }
+                        ),
+                    )
+                }
+
+                IconButton(
+                    modifier = Modifier
+                        .padding(top = 3.dp, end = 4.dp)
+                        .size(24.dp)
+                        .scale(1.0f),
+                    onClick = {
+                        refreshTimeFrame()
+                    }) {
+                    Icon(imageVector = Icons.Default.Refresh, contentDescription = null)
+                }
+
+                IconButton(
+                    modifier = Modifier
+                        .padding(top = 3.dp, end = 8.dp)
+                        .size(24.dp)
+                        .scale(1.0f),
+                    onClick = {
+                        clearTimeFrame()
+                    }) {
+                    Icon(imageVector = Icons.Default.Clear, contentDescription = null)
+                }
+            }
+
+            OsmMapView(
+                Modifier
+                    .fillMaxSize()
+                    .padding(top = 12.dp),
+                vm = vm,
+                appOptions = appOptions
+            )
+        }
     }
 }
 
@@ -187,7 +200,8 @@ fun GeoViewPreview() {
         val vm = GeoViewModel(NullTrailsRepository())
         GeoView(
             vm,
-            AppOptions()
+            AppOptions(),
+            makeBottomBar(AppScreen.Map, NavHostController(context))
         )
     }
 }
