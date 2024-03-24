@@ -32,7 +32,7 @@ fun AppNavigation(trailsRepo: TrailsRepository, appOptions: AppOptions) {
             TrailListView(
                 vm = TrailListViewModel(trailsRepo),
                 navBack = { navController.navigateUp() },
-                bottomBar = makeBottomBar(AppScreen.Map, navController)
+                bottomBar = makeBottomBar(AppScreen.TrailList, navController)
             )
         }
     }
