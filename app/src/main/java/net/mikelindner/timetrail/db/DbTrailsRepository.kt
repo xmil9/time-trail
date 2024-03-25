@@ -9,10 +9,27 @@ import net.mikelindner.timetrail.domain.Trail
 import net.mikelindner.timetrail.domain.TrailsRepository
 
 class DbTrailsRepository(private val trailsDao: TrailsDao) : TrailsRepository {
-    override suspend fun getTrailEventsAnyPlaceAnyTime(): List<Trail> {
+
+    override suspend fun getTrailsAnyPlaceAnyTime(): List<Trail> {
         // Wait for DB result to come in.
         val queryResult =
-            GlobalScope.async(Dispatchers.Default) { trailsDao.getEventsAnyPlaceAnyTime() }.await()
+            GlobalScope.async(Dispatchers.Default) {
+                trailsDao.getTrailsAnyPlaceAnyTime()
+            }.await()
+
+        return queryResult
+    }
+
+    override suspend fun getTrailEventsAnyPlaceAnyTime(trails: List<Trail>?): List<Trail> {
+        // Wait for DB result to come in.
+        val queryResult =
+            GlobalScope.async(Dispatchers.Default) {
+                if (trails == null)
+                    trailsDao.getEventsAnyPlaceAnyTime()
+                else
+                    trailsDao.getEventsAnyPlaceAnyTime(trails.map { it.id })
+            }.await()
+
         return populateTrails(queryResult)
     }
 
