@@ -24,7 +24,7 @@ fun OsmMapView(
     AndroidView(
         modifier = modifier,
         factory = { context ->
-            TrailsMapView(context).apply {
+            TrailMapView(context).apply {
                 // Load/initialize the osmdroid configuration.
                 // This won't work unless you have imported this: org.osmdroid.config.Configuration.*.
                 // It 'should' ensure that the map has a writable location for the map cache,
@@ -38,7 +38,7 @@ fun OsmMapView(
                     .load(context, PreferenceManager.getDefaultSharedPreferences(context))
 
                 setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE)
-                overlayManager = TrailsOverlayManager(overlayManager, overlayManager.tilesOverlay)
+                overlayManager = TrailOverlayManager(overlayManager, overlayManager.tilesOverlay)
 
                 // Needed to keep map view from drawing outside of its bounds.
                 clipToOutline = true

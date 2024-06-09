@@ -8,7 +8,7 @@ import org.osmdroid.views.overlay.OverlayManager
 import org.osmdroid.views.overlay.OverlayWithIW
 import org.osmdroid.views.overlay.TilesOverlay
 
-class TrailsOverlayManager(
+class TrailOverlayManager(
     private val originalManager: OverlayManager,
     tilesOverlay: TilesOverlay
 ) : DefaultOverlayManager(tilesOverlay) {

@@ -12,7 +12,7 @@ class TrailEventMarker(
     private val event: Event,
     private val eventColor: Hsl,
     eventMarker: Drawable,
-    map: TrailsMapView
+    map: TrailMapView
 ) : Marker(map) {
 
     init {

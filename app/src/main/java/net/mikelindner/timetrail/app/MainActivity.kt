@@ -17,7 +17,7 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    val trailState = TrailState(TrailsService.trailsRepo)
+                    val trailState = TrailState(TrailService.trailsRepo)
                     AppNavigation(trailState, AppOptions())
                 }
             }

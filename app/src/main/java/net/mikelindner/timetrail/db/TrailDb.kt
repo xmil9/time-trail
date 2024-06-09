@@ -12,6 +12,6 @@ import net.mikelindner.timetrail.domain.Trail
     version = 3
 )
 @TypeConverters(DbConverters::class)
-abstract class TrailsDb : RoomDatabase() {
-    abstract fun trailsDao(): TrailsDao
+abstract class TrailDb : RoomDatabase() {
+    abstract fun trailsDao(): TrailDao
 }

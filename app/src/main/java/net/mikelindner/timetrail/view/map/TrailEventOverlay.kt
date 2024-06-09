@@ -13,7 +13,7 @@ class TrailEventOverlay(
     private val trailEvent: Event,
     private val eventColor: Hsl,
     private val scale: Double,
-    map: TrailsMapView
+    map: TrailMapView
 ) : Polygon(map) {
 
     init {
@@ -32,7 +32,7 @@ class TrailEventOverlay(
 
     override fun click(pMapView: MapView?, pEventPos: GeoPoint?): Boolean {
         pMapView.apply {
-            if (pMapView is TrailsMapView)
+            if (pMapView is TrailMapView)
                 pMapView.addClickedTrailEvent(trailEvent)
         }
         return super.click(pMapView, pEventPos)

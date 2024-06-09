@@ -4,7 +4,7 @@ import net.mikelindner.timetrail.domain.Hsl
 import net.mikelindner.timetrail.domain.Trail
 import org.osmdroid.views.overlay.Polyline
 
-class TrailLineOverlay(private val trail: Trail, private val color: Hsl, map: TrailsMapView) :
+class TrailLineOverlay(private val trail: Trail, private val color: Hsl, map: TrailMapView) :
     Polyline(map) {
 
     init {

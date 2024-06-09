@@ -5,7 +5,7 @@ import net.mikelindner.timetrail.domain.Hsl
 import net.mikelindner.timetrail.domain.Trail
 import org.osmdroid.views.overlay.Marker
 
-class OsmMapifier(val map: TrailsMapView) : Mapifier {
+class OsmMapifier(val map: TrailMapView) : Mapifier {
     private val markerOverlays = ArrayList<Marker>()
 
     override fun addTrail(trail: Trail, color: Hsl, dotScale: Double, eventMarker: Drawable) {

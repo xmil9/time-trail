@@ -6,7 +6,7 @@ import net.mikelindner.timetrail.domain.Event
 import net.mikelindner.timetrail.domain.Trail
 
 @Dao
-interface TrailsDao {
+interface TrailDao {
 
     // Returns all trails without event data.
     @Query(

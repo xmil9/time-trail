@@ -6,7 +6,7 @@ import net.mikelindner.timetrail.domain.Event
 import org.osmdroid.views.MapView
 
 // Subclass to customize OSM MapView's functionality.
-class TrailsMapView(context: Context) : MapView(context) {
+class TrailMapView(context: Context) : MapView(context) {
 
     private var clickedEvents = ArrayList<Event>()
 

@@ -8,13 +8,13 @@ import net.mikelindner.timetrail.domain.Event
 import net.mikelindner.timetrail.domain.Trail
 import net.mikelindner.timetrail.domain.TrailsRepository
 
-class DbTrailsRepository(private val trailsDao: TrailsDao) : TrailsRepository {
+class DbTrailRepository(private val trailDao: TrailDao) : TrailsRepository {
 
     override suspend fun getTrailsAnyPlaceAnyTime(): List<Trail> {
         // Wait for DB result to come in.
         val queryResult =
             GlobalScope.async(Dispatchers.Default) {
-                trailsDao.getTrailsAnyPlaceAnyTime()
+                trailDao.getTrailsAnyPlaceAnyTime()
             }.await()
 
         return queryResult
@@ -25,9 +25,9 @@ class DbTrailsRepository(private val trailsDao: TrailsDao) : TrailsRepository {
         val queryResult =
             GlobalScope.async(Dispatchers.Default) {
                 if (trails == null)
-                    trailsDao.getEventsAnyPlaceAnyTime()
+                    trailDao.getEventsAnyPlaceAnyTime()
                 else
-                    trailsDao.getEventsAnyPlaceAnyTime(trails.map { it.id })
+                    trailDao.getEventsAnyPlaceAnyTime(trails.map { it.id })
             }.await()
 
         return populateTrails(queryResult)
@@ -40,7 +40,7 @@ class DbTrailsRepository(private val trailsDao: TrailsDao) : TrailsRepository {
         // Wait for DB result to come in.
         val queryResult =
             GlobalScope.async(Dispatchers.Default) {
-                trailsDao.getEventsAnyPlaceStartedAfterEndedBefore(
+                trailDao.getEventsAnyPlaceStartedAfterEndedBefore(
                     Date.julianDays(from),
                     Date.julianDays(to)
                 )
@@ -57,7 +57,7 @@ class DbTrailsRepository(private val trailsDao: TrailsDao) : TrailsRepository {
         // Wait for DB result to come in.
         val queryResult =
             GlobalScope.async(Dispatchers.Default) {
-                trailsDao.getEventsAnyPlaceStartedDuring(
+                trailDao.getEventsAnyPlaceStartedDuring(
                     Date.julianDays(from),
                     Date.julianDays(to)
                 )
@@ -71,7 +71,7 @@ class DbTrailsRepository(private val trailsDao: TrailsDao) : TrailsRepository {
         // Wait for DB result to come in.
         val queryResult =
             GlobalScope.async(Dispatchers.Default) {
-                trailsDao.getEventsAnyPlaceStartedAfter(
+                trailDao.getEventsAnyPlaceStartedAfter(
                     Date.julianDays(after)
                 )
             }
@@ -84,7 +84,7 @@ class DbTrailsRepository(private val trailsDao: TrailsDao) : TrailsRepository {
         // Wait for DB result to come in.
         val queryResult =
             GlobalScope.async(Dispatchers.Default) {
-                trailsDao.getEventsAnyPlaceStartedBefore(
+                trailDao.getEventsAnyPlaceStartedBefore(
                     Date.julianDays(before)
                 )
             }
