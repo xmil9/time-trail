@@ -35,6 +35,7 @@ import net.mikelindner.timetrail.app.AppOptions
 import net.mikelindner.timetrail.app.AppScreen
 import net.mikelindner.timetrail.domain.Date
 import net.mikelindner.timetrail.domain.NullTrailsRepository
+import net.mikelindner.timetrail.domain.TrailState
 import net.mikelindner.timetrail.ui.theme.TimeTrailTheme
 import net.mikelindner.timetrail.view.map.OsmMapView
 
@@ -59,8 +60,8 @@ fun GeoView(
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
 
-    var from = remember { mutableStateOf("") }
-    var to = remember { mutableStateOf("") }
+    val from = remember { mutableStateOf("") }
+    val to = remember { mutableStateOf("") }
     val dateFormat = "yyyy-mm-dd"
     val fromLabel = "From"
     val toLabel = "To"
@@ -69,7 +70,7 @@ fun GeoView(
         try {
             val fromDate = toDate(from.value, fromLabel)
             val toDate = toDate(to.value, toLabel)
-            vm.timeConstrainedTrails(fromDate, toDate)
+            vm.filterTime(fromDate, toDate)
         } catch (ex: Exception) {
             ex.message?.let { showError(context, it) }
         }
@@ -78,7 +79,7 @@ fun GeoView(
     fun clearTimeFrame() {
         from.value = ""
         to.value = ""
-        vm.allTrails()
+        vm.anyTime()
     }
 
     fun onDateEntered() {
@@ -197,7 +198,7 @@ fun GeoView(
 fun GeoViewPreview() {
     TimeTrailTheme {
         val context = LocalContext.current
-        val vm = GeoViewModel(NullTrailsRepository())
+        val vm = GeoViewModel(TrailState(NullTrailsRepository()))
         GeoView(
             vm,
             AppOptions(),

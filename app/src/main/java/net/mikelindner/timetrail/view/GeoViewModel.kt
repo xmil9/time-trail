@@ -6,38 +6,46 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import net.mikelindner.timetrail.domain.Date
 import net.mikelindner.timetrail.domain.Trail
-import net.mikelindner.timetrail.domain.TrailsRepository
+import net.mikelindner.timetrail.domain.TrailState
 
 class GeoViewModel(
-    private val trailsRepo: TrailsRepository
+    private val trailState: TrailState
 ) : ViewModel() {
 
     var trails = mutableStateOf(listOf<Trail>())
 
     init {
-        allTrails()
+        anyTime()
     }
 
-    fun allTrails() {
+    private val trailRepo
+        get() = trailState.repo
+
+    private fun filterSelected(trails: List<Trail>): List<Trail> {
+        return trailState.selection.filterSelected(trails)
+    }
+
+    fun anyTime() {
         viewModelScope.launch {
-            trails.value = trailsRepo.getTrailEventsAnyPlaceAnyTime()
+            trails.value = filterSelected(trailRepo.getTrailEventsAnyPlaceAnyTime())
         }
     }
 
-    fun timeConstrainedTrails(from: Date?, to: Date?) {
+    fun filterTime(from: Date?, to: Date?) {
         if (from == null && to == null) {
-            allTrails()
+            anyTime()
         } else if (from != null && to == null) {
             viewModelScope.launch {
-                trails.value = trailsRepo.getTrailEventsAnyPlaceStartedAfter(from)
+                trails.value = filterSelected(trailRepo.getTrailEventsAnyPlaceStartedAfter(from))
             }
         } else if (from == null && to != null) {
             viewModelScope.launch {
-                trails.value = trailsRepo.getTrailEventsAnyPlaceStartedBefore(to)
+                trails.value = filterSelected(trailRepo.getTrailEventsAnyPlaceStartedBefore(to))
             }
-        } else if (from != null && to != null){
+        } else if (from != null && to != null) {
             viewModelScope.launch {
-                trails.value = trailsRepo.getTrailEventsAnyPlaceStartedDuring(from, to)
+                trails.value =
+                    filterSelected(trailRepo.getTrailEventsAnyPlaceStartedDuring(from, to))
             }
         }
     }

@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import net.mikelindner.timetrail.domain.TrailState
 import net.mikelindner.timetrail.ui.theme.TimeTrailTheme
 
 class MainActivity : ComponentActivity() {
@@ -16,7 +17,8 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    AppNavigation(TrailsService.trailsRepo, AppOptions())
+                    val trailState = TrailState(TrailsService.trailsRepo)
+                    AppNavigation(trailState, AppOptions())
                 }
             }
         }

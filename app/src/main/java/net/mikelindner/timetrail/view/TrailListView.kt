@@ -24,6 +24,7 @@ import androidx.navigation.NavHostController
 import net.mikelindner.timetrail.app.AppScreen
 import net.mikelindner.timetrail.domain.NullTrailsRepository
 import net.mikelindner.timetrail.domain.Trail
+import net.mikelindner.timetrail.domain.TrailState
 import net.mikelindner.timetrail.ui.theme.TimeTrailTheme
 
 @Composable
@@ -60,8 +61,8 @@ fun TrailListView(
                         trail,
                         vm.isSelected(trail),
                         onClick = {},
-                        onCheckedChanged = { trail, checked ->
-                            vm.select(trail, checked)
+                        onCheckedChanged = { checkedTrail, checked ->
+                            vm.select(checkedTrail, checked)
                         }
                     )
                 }
@@ -109,7 +110,7 @@ fun TrailListViewPreview() {
     TimeTrailTheme {
         val context = LocalContext.current
         TrailListView(
-            TrailListViewModel(NullTrailsRepository()),
+            TrailListViewModel(TrailState(NullTrailsRepository())),
             {},
             makeBottomBar(AppScreen.TrailList, NavHostController(context))
         )
